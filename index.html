@@ -1,0 +1,93 @@
+import { useState } from "react";
+
+const questions = [
+  {
+    q: "연인이 연락이 늦을 때 나는?",
+    options: ["바로 걱정된다", "이해하려고 한다", "신경 안 쓴다"]
+  },
+  {
+    q: "데이트 계획은?",
+    options: ["내가 주도한다", "함께 정한다", "상대에게 맡긴다"]
+  },
+  {
+    q: "싸웠을 때 나는?",
+    options: ["바로 풀고 싶다", "시간을 갖는다", "피한다"]
+  },
+  {
+    q: "애정 표현은?",
+    options: ["자주 한다", "적당히 한다", "잘 안 한다"]
+  },
+  {
+    q: "연애에서 중요한 것은?",
+    options: ["안정감", "균형", "자유"]
+  }
+];
+
+export default function LoveQuiz() {
+  const [answers, setAnswers] = useState([]);
+  const [result, setResult] = useState(null);
+
+  const handleAnswer = (index) => {
+    const newAnswers = [...answers, index];
+    setAnswers(newAnswers);
+
+    if (newAnswers.length === questions.length) {
+      calculateResult(newAnswers);
+    }
+  };
+
+  const calculateResult = (answers) => {
+    const score = answers.reduce((a, b) => a + b, 0);
+
+    if (score <= 3) {
+      setResult({
+        type: "헌신형",
+        desc: "상대에게 깊이 몰입하는 스타일이에요.",
+        match: "자유롭지만 책임감 있는 사람"
+      });
+    } else if (score <= 7) {
+      setResult({
+        type: "균형형",
+        desc: "서로의 공간과 관계를 잘 조율해요.",
+        match: "비슷한 가치관을 가진 사람"
+      });
+    } else {
+      setResult({
+        type: "자유형",
+        desc: "자신의 삶을 중요하게 생각하는 스타일이에요.",
+        match: "집착하지 않고 이해심 많은 사람"
+      });
+    }
+  };
+
+  if (result) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen p-4">
+        <h1 className="text-2xl font-bold mb-4">결과</h1>
+        <p className="text-xl">{result.type}</p>
+        <p className="mt-2">{result.desc}</p>
+        <p className="mt-4 font-semibold">잘 맞는 스타일: {result.match}</p>
+      </div>
+    );
+  }
+
+  const current = answers.length;
+
+  return (
+    <div className="flex flex-col items-center justify-center h-screen p-4">
+      <h1 className="text-2xl font-bold mb-6">연애 스타일 테스트</h1>
+      <p className="mb-4">{questions[current].q}</p>
+      <div className="flex flex-col gap-2">
+        {questions[current].options.map((opt, i) => (
+          <button
+            key={i}
+            onClick={() => handleAnswer(i)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-xl"
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
